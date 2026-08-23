@@ -1,0 +1,29 @@
+Doremon AI — Copyright Notice
+==============================
+
+This software is a derivative work based on "Odysseus," an open-source
+AI workspace originally developed by pewdiepie-archdaemon and the Odysseus
+project contributors (https://github.com/pewdiepie-archdaemon/odysseus).
+
+The overwhelming majority of the source code in this repository — the
+core application, routing, authentication, database models, and most
+existing features — was written by the original Odysseus authors and
+its many outside contributors, and remains their copyrighted work.
+Per-file `SPDX-License-Identifier` headers in this repository indicate
+license terms only and are not authorship or copyright claims.
+
+This repository's git history was reset by Anubhav (nextgencode13) for
+personal-use distribution reasons; it does not reflect original
+authorship. The complete, unaltered commit history and contributor list
+remain available in the upstream project linked above.
+
+New features and modifications added after the fork (persona theming,
+the crew-character system, several engagement/productivity modules, and
+UI rebranding) are Copyright (c) 2026 Anubhav (nextgencode13). Files
+containing a "Copyright (c) 2026 Doremon AI" header are new, first-party
+files substantially authored after the fork.
+
+The entire work, including all upstream and downstream contributions,
+remains licensed under the GNU Affero General Public License v3.0
+(AGPL-3.0-or-later). See LICENSE for the full license text and
+ACKNOWLEDGMENTS.md for third-party library attributions.
