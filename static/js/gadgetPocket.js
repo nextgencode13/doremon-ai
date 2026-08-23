@@ -248,7 +248,9 @@ function _showConversationStarters(c) {
   wrap.id = 'crew-starters-wrap';
   wrap.className = 'crew-starters-wrap';
   wrap.innerHTML = `<div class="crew-starters-label">Try asking ${_esc(c.name)}…</div>` +
-    starters.map(q => `<button type="button" class="crew-starter-chip">${_esc(q)}</button>`).join('');
+    `<div class="crew-starters-chips">` +
+    starters.map(q => `<button type="button" class="crew-starter-chip" title="${_esc(q)}">${_esc(q)}</button>`).join('') +
+    `</div>`;
   const msgInput = document.getElementById('message');
   const form = document.getElementById('chat-form');
   if (msgInput) {
