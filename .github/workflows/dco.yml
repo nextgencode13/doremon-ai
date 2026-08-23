@@ -1,0 +1,15 @@
+name: DCO
+
+on:
+  pull_request:
+    branches: [dev, main]
+
+jobs:
+  dco:
+    name: Developer Certificate of Origin
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check DCO sign-off
+        uses: dco-org/enforce-dco@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
