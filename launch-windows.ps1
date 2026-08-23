@@ -9,13 +9,18 @@
   Usage:
     powershell -ExecutionPolicy Bypass -File .\launch-windows.ps1
     powershell -ExecutionPolicy Bypass -File .\launch-windows.ps1 -Port 7000 -BindHost 127.0.0.1
+    powershell -ExecutionPolicy Bypass -File .\launch-windows.ps1 -NoBrowser
+
+  Once the server responds, your default browser opens automatically.
+  Pass -NoBrowser to skip that (e.g. headless / background start).
 
   Tip: bind 127.0.0.1 (default) for local-only use. Use 0.0.0.0 only when you
   intentionally want other devices on your LAN to reach it.
 #>
 param(
     [int]$Port = 7000,
-    [string]$BindHost = "127.0.0.1"
+    [string]$BindHost = "127.0.0.1",
+    [switch]$NoBrowser
 )
 
 $ErrorActionPreference = "Stop"
@@ -158,4 +163,44 @@ if (Test-Path $cudaBase) {
 Write-Step ("Starting Odysseus at http://{0}:{1}" -f $BindHost, $Port)
 Write-Host "Press Ctrl+C to stop."
 Write-Host ""
-& $venvPy -m uvicorn app:app --host $BindHost --port $Port
+
+# Loopback works even when binding 0.0.0.0 (all interfaces includes localhost),
+# and a browser can't be pointed at 0.0.0.0 directly.
+$probeHost = if ($BindHost -eq "0.0.0.0") { "127.0.0.1" } else { $BindHost }
+$openUrl = "http://{0}:{1}/" -f $probeHost, $Port
+
+$browserJob = $null
+if (-not $NoBrowser) {
+    # Poll with a real (tiny-timeout) HTTP request in the background and open
+    # the default browser the moment the app responds - any status code counts
+    # as "ready" (auth middleware may 302/401, that still means it's up), and
+    # a real request avoids logging a bogus "Invalid HTTP request" warning the
+    # way a bare TCP connect-then-close would.
+    $browserJob = Start-Job -ScriptBlock {
+        param($url)
+        $deadline = (Get-Date).AddSeconds(90)
+        $client = [System.Net.Http.HttpClient]::new()
+        $client.Timeout = [TimeSpan]::FromMilliseconds(800)
+        while ((Get-Date) -lt $deadline) {
+            $ready = $false
+            try {
+                $client.GetAsync($url).GetAwaiter().GetResult() | Out-Null
+                $ready = $true
+            } catch { }
+            if ($ready) {
+                Start-Process $url
+                return
+            }
+            Start-Sleep -Milliseconds 400
+        }
+    } -ArgumentList $openUrl
+}
+
+try {
+    & $venvPy -m uvicorn app:app --host $BindHost --port $Port
+} finally {
+    if ($browserJob) {
+        Stop-Job $browserJob -ErrorAction SilentlyContinue | Out-Null
+        Remove-Job $browserJob -ErrorAction SilentlyContinue | Out-Null
+    }
+}
