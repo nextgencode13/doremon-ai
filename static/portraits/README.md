@@ -1,9 +1,11 @@
 # Character portraits
 
-Drop the Doraemon-crew portrait PNGs here, named by character id:
+Portrait PNGs for the crew, named by character id:
 
-doraemon.png  nobita.png  shizuka.png  gian.png  suneo.png
-dekisugi.png  dorami.png  sensei.png   jaiko.png
+doraemon.png  nobita.png   shizuka.png  gian.png     suneo.png
+dekisugi.png  dorami.png   sensei.png   jaiko.png
+gianmom.png   minidora.png nobisuke.png sewashi.png  suneomom.png
+tamako.png
 
-1024×1024 square PNGs. See ANAUBHAV-WORK/character-image-prompts.md for the
-generation prompts. Until a file is added, the UI shows that character's emoji.
+1024×1024 square PNGs. If a character's file is missing, the UI falls
+back to that character's emoji.
